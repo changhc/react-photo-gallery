@@ -26,6 +26,7 @@ class PhotoGallery extends Component {
     ).then((json) => {
       const body = json;
       const colY = Array(this.state.ncol).fill(0);
+      this.setState({ width: json.width });
       for (let i = 0; i < json.meta.length; i += 1) {
         const topVal = Math.min.apply(null, colY);
         const minCol = colY.indexOf(topVal);
@@ -33,7 +34,8 @@ class PhotoGallery extends Component {
         body.meta[i] = {
           width: this.state.width,
           height: json.meta[i].height,
-          url: json.meta[i].url,
+          thumb: json.meta[i].thumb,
+          origin: json.meta[i].origin,
           left: this.state.width * minCol,
           top: topVal,
         };
