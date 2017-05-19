@@ -4,7 +4,7 @@ import Item from './Item';
 class ItemController extends Component {
   render() {
     return (
-      <Item meta={this.props.meta} />
+      <Item meta={this.props.meta} click={this.props.click} />
     );
   }
 }

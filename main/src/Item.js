@@ -8,10 +8,11 @@ const Item = (props) => {
     left: props.meta.left,
     top: props.meta.top,
     boxShadow: 'rgba(0, 0, 0, 0.33) 0px 1px 3px 0px',
+    cursor: 'pointer',
   };
   return (
     <div style={style}>
-      hi
+      <img src={props.meta.thumb} width={props.meta.width} alt="" onClick={() => props.click(props.meta.index)} />
     </div>
   );
 };
