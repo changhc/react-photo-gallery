@@ -27,7 +27,7 @@ const LightBox = (props) => {
     }
   };
   let div = null;
-  console.log('updated');
+
   return (
     <div
       tabIndex="0"
@@ -36,11 +36,11 @@ const LightBox = (props) => {
       onLoad={() => { div.focus(); }}
     >
       <div className={`${styles.innerBox} ${imgOrientation}`}>
-        <div className={styles.navBox}>
-          {prevButton}
-          {nextButton}
-        </div>
         <img src={props.meta.origin} alt="" className={styles.img} />
+      </div>
+      <div className={styles.navBox}>
+        {prevButton}
+        {nextButton}
       </div>
       <div className={styles.lightBox} onClick={props.close} />
     </div>
