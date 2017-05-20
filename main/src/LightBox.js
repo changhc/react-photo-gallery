@@ -1,33 +1,58 @@
-import React, { Component } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+import meta from './Item';
 import styles from './LightBox.css';
 
-class LightBox extends Component {
-  render() {
-    return (
-      <div>
-        <div className={`${styles.innerBox} ${this.props.img.width > this.props.img.height ? styles.landscape : styles.portrait}`}>
-          <div className={styles.navBox}>
-            {this.props.head
-            ? null
-            :
-            <div className={styles.button} onClick={() => this.props.change(false)}>
-              <span>❮</span>
-            </div>
-            }
-            {this.props.tail
-            ? null
-            :
-            <div className={`${styles.button} ${styles.right}`} onClick={() => this.props.change(true)}>
-              <span>❯</span>
-            </div>
-            }
-          </div>
-          <img src={this.props.img.origin} alt="" className={styles.img} />
-        </div>
-        <div className={styles.lightBox} onClick={this.props.close} />
+const LightBox = (props) => {
+  const prevButton = props.head
+    ? null
+    : (
+      <div className={styles.button} onClick={() => props.change(false)}>
+        <span>❮</span>
       </div>
     );
-  }
-}
+  const nextButton = props.tail
+    ? null
+    : (
+      <div className={`${styles.button} ${styles.right}`} onClick={() => props.change(true)}>
+        <span>❯</span>
+      </div>
+    );
+  const imgOrientation = props.meta.width > props.meta.height ? styles.landscape : styles.portrait;
+  const keyDown = (event) => {
+    const e = event;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      props.close();
+    }
+  };
+  let div = null;
+  console.log('updated');
+  return (
+    <div
+      tabIndex="0"
+      onKeyDown={keyDown}
+      ref={(item) => { div = item; }}
+      onLoad={() => { div.focus(); }}
+    >
+      <div className={`${styles.innerBox} ${imgOrientation}`}>
+        <div className={styles.navBox}>
+          {prevButton}
+          {nextButton}
+        </div>
+        <img src={props.meta.origin} alt="" className={styles.img} />
+      </div>
+      <div className={styles.lightBox} onClick={props.close} />
+    </div>
+  );
+};
+
+LightBox.propTypes = {
+  head: PropTypes.bool.isRequired,
+  tail: PropTypes.bool.isRequired,
+  close: PropTypes.func.isRequired,
+  change: PropTypes.func.isRequired,
+  meta: PropTypes.shape(meta).isRequired,
+};
 
 export default LightBox;

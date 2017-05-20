@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import ItemController from './ItemController';
+import { Item } from './Item';
 import LightBox from './LightBox';
 
 const hostname = 'http://localhost:5000';
@@ -19,6 +19,7 @@ class PhotoGallery extends Component {
     this.showLightBox = this.showLightBox.bind(this);
     this.closeLightBox = this.closeLightBox.bind(this);
     this.changeImage = this.changeImage.bind(this);
+    this.renderItem = this.renderItem.bind(this);
   }
 
   componentDidMount() {
@@ -44,6 +45,7 @@ class PhotoGallery extends Component {
           max = topVal + json.meta[i].height;
         }
         body.meta[i] = {
+          hidden: true,
           width: this.state.width,
           height: json.meta[i].height,
           thumb: hostname + json.meta[i].thumb,
@@ -54,7 +56,13 @@ class PhotoGallery extends Component {
         };
       }
       this.setState({ imageMeta: body.meta, maxHeight: max });
-      console.log(body);
+      for (let i = 0; i < this.state.imageMeta.length; i += 1) {
+        setTimeout(() => {
+          const meta = this.state.imageMeta;
+          meta[i].hidden = false;
+          this.setState({ imageMeta: meta });
+        }, Math.random() * 1000);
+      }
     }).catch((err) => {
       console.error(err);
     });
@@ -74,27 +82,34 @@ class PhotoGallery extends Component {
     });
   }
 
+  renderItem(item) {
+    return (
+      item.hidden ? null : <Item key={item.origin} meta={item} click={this.showLightBox} />
+    );
+  }
+
   render() {
     const rootStyle = {
       margin: 10,
       position: 'relative',
       height: this.state.maxHeight,
     };
+    const lightBox = this.state.nowOpenIndex === -1
+      ? null
+      : (
+        <LightBox
+          meta={this.state.imageMeta[this.state.nowOpenIndex]}
+          change={this.changeImage}
+          close={this.closeLightBox}
+          tail={this.state.nowOpenIndex === this.state.imageMeta.length - 1}
+          head={this.state.nowOpenIndex === 0}
+        />
+      );
+
     return (
       <div style={rootStyle}>
-        {this.state.imageMeta.map(item =>
-          <ItemController key={item.origin} meta={item} click={this.showLightBox} />)
-        }
-        {this.state.nowOpenIndex === -1
-          ? null
-          : <LightBox
-            img={this.state.imageMeta[this.state.nowOpenIndex]}
-            change={this.changeImage}
-            close={this.closeLightBox}
-            tail={this.state.nowOpenIndex === this.state.imageMeta.length - 1}
-            head={this.state.nowOpenIndex === 0}
-          />
-        }
+        {this.state.imageMeta.map(this.renderItem)}
+        {lightBox}
       </div>
     );
   }
