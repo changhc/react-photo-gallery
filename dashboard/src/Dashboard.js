@@ -1,26 +1,16 @@
 import React, { Component } from 'react';
-import { Item } from './Item';
-import LightBox from './LightBox';
+import ImageUpload from './ImageUpload';
 
 // const hostname = 'http://localhost:5000';
 const hostname = '';
 
-class PhotoGallery extends Component {
+class Dashboard extends Component {
   constructor() {
     super();
     this.state = {
-      width: 200,
-      maxHeight: 0,
-      margin: 2,
-      ncol: 3,
       imageMeta: [],
-      nowOpenIndex: -1,
     };
     this.fetchImageMeta = this.fetchImageMeta.bind(this);
-    this.showLightBox = this.showLightBox.bind(this);
-    this.closeLightBox = this.closeLightBox.bind(this);
-    this.changeImage = this.changeImage.bind(this);
-    this.renderItem = this.renderItem.bind(this);
   }
 
   componentDidMount() {
@@ -69,51 +59,13 @@ class PhotoGallery extends Component {
     });
   }
 
-  showLightBox(index) {
-    this.setState({ nowOpenIndex: index });
-  }
-
-  closeLightBox() {
-    this.setState({ nowOpenIndex: -1 });
-  }
-
-  changeImage(next) {
-    this.setState({
-      nowOpenIndex: next ? this.state.nowOpenIndex + 1 : this.state.nowOpenIndex - 1,
-    });
-  }
-
-  renderItem(item) {
-    return (
-      item.hidden ? null : <Item key={item.origin} meta={item} click={this.showLightBox} />
-    );
-  }
-
   render() {
-    const rootStyle = {
-      margin: 10,
-      position: 'relative',
-      height: this.state.maxHeight,
-    };
-    const lightBox = this.state.nowOpenIndex === -1
-      ? null
-      : (
-        <LightBox
-          meta={this.state.imageMeta[this.state.nowOpenIndex]}
-          change={this.changeImage}
-          close={this.closeLightBox}
-          tail={this.state.nowOpenIndex === this.state.imageMeta.length - 1}
-          head={this.state.nowOpenIndex === 0}
-        />
-      );
-
     return (
-      <div style={rootStyle}>
-        {this.state.imageMeta.map(this.renderItem)}
-        {lightBox}
+      <div>
+        <ImageUpload remote={`${hostname}/api/images`} />
       </div>
     );
   }
 }
 
-export default PhotoGallery;
+export default Dashboard;
